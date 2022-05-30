@@ -20,7 +20,7 @@ jobs:
       - name: List files after checkout
         run: |
           pwd
-          ls -ass
+          ls -a
       - name: Env variables
         run: |
           echo $GITHUB_SHA  

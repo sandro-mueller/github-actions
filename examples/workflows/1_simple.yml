@@ -1,6 +1,3 @@
-# GitHub settings -> Notifications
-# Repo settings -> Secrets (ACTIONS_RUNNER_DEBUG, ACTIONS_STEP_DEBUG)
-
 name: Shell Commands
 
 on: [push]
@@ -25,7 +22,7 @@ jobs:
 
   run-windows-commands:
     runs-on: windows-latest
-    needs: ["run-shell-command"] # depends on
+    needs: ['run-shell-command'] # depends on
     steps:
       - name: Directory PowerShell
         run: Get-Location

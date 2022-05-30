@@ -33,7 +33,39 @@ jobs:
         env:
           CI: true # removes interactive terminal for tests
 
+      # Upload Coverage
+      - name: Upload Test Coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage
+          path: coverage # exists after npm test
+
       # Confirm pull request
       - name: Build
         if: github.event_name == 'push'
         run: npm run build
+
+      # Upload Build Folder
+      - name: Upload Build Folder
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build # exists after npm run build
+
+      # Main workflow
+
+      # Zip assets for release (see release.config.js)
+      - name: ZIP Assets
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          zip -r build.zip ./build
+          zip -r coverage.zip ./coverage
+
+      # Deploy to github-pages
+      - name: Deploy
+        if: github.event_name == 'push'
+        uses: JamesIves/github-pages-deploy-action@v4.3.0
+        with:
+          branch: gh-pages
+          folder: build

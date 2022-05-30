@@ -18,7 +18,7 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} # new cache needed when os or package changes
 
-          #search for older keys starting with
+          # search for older keys starting with
           restore-keys: |
             ${{ runner.os }}-node-
 
@@ -26,7 +26,7 @@ jobs:
       - name: Use NodeJS
         uses: actions/setup-node@v1
         with:
-          node-version: "16.x"
+          node-version: '16.x'
       - run: npm ci
       - run: npm run format:check
       - run: npm test -- --coverage
