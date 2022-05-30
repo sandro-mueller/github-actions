@@ -1,0 +1,36 @@
+# By default gitHub will not clone the repository
+
+name: Actions Workflow
+
+on: [push]
+
+jobs:
+  run-github-actions:
+    runs-on: ubuntu-latest
+    steps:
+      # Will show no files
+      - name: List files before checkout
+        run: |
+          pwd
+          ls -a
+      # Checkout the commit that triggered the workflow
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: List files after checkout
+        run: |
+          pwd
+          ls -ass
+      - name: Env variables
+        run: |
+          echo $GITHUB_SHA  
+          echo $GITHUB_REPOSITORY  
+          echo $GITHUB_WORKSPACE  
+          echo $GITHUB_REF  
+          echo "${{ github.token }}"
+
+# lates commit id
+# username/repository-name
+# workspace directory
+# name of branch
+# token (not displayed in job)

@@ -1,0 +1,21 @@
+# https://crontab.guru/
+
+name: Actions Workflow
+
+# on: [push, pull_request]
+
+on:
+  push:
+  pull_request:
+    types: [closed, assigned, opened, reopened]
+
+  schedule:
+    - cron: "* * * * *"
+    - cron: "0 8 * * 0"
+
+jobs:
+  run-shell-command:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo a string
+        run: echo "Hello World"

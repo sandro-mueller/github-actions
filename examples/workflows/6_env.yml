@@ -1,0 +1,29 @@
+on: push
+env:
+  WF_ENV: Available to all jobs
+  DEFAULT_SECRET: ${{ secrets.GITHUB_TOKEN }}
+  # WF_ENV: ${{ secrets.WF_ENV }}
+
+jobs:
+  log-env:
+    runs-on: ubuntu-latest
+    # timeout-minutes: 360
+    env:
+      JOB_ENV: Available to all steps in log-env job
+
+    steps:
+      - name: Log ENV Variables
+        env:
+          STEP_ENV: Available to only this step
+        run: |
+          echo "WF_ENV: ${WF_ENV}"
+          echo "JOB_ENV: ${JOB_ENV}"
+          echo "JOB_ENV: ${STEP_ENV}"
+        # continue-on-error: true
+      - name: Example 1
+        if: failure()
+        run: echo "Runs if error"
+
+      - name: Example 2
+        if: failure()
+        run: echo "Does not run if error"

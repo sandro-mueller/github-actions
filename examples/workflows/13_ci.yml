@@ -1,0 +1,78 @@
+name: CI
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Cache (before npm ci)
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} # new cache needed when os or package changes
+
+          #search for older keys starting with
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Create pull request -> develop
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm test -- --coverage
+        env:
+          CI: true # removes interactive terminal for tests
+
+      # Upload Coverage
+      - name: Upload Test Coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage
+          path: coverage # exists after npm test
+
+      # Confirm pull request
+      - name: Build
+        if: github.event_name == 'push'
+        run: npm run build
+
+      # Upload Build Folder
+      - name: Upload Build Folder
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build # exists after npm run build
+
+      # Main workflow
+
+      # Zip assets for release (see release.config.js)
+      - name: ZIP Assets
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          zip -r build.zip ./build
+          zip -r coverage.zip ./coverage
+
+      # Create a release for main
+      - name: Create a Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Deploy to github-pages
+      - name: Deploy
+        if: github.event_name == 'push'
+        uses: JamesIves/github-pages-deploy-action@v4.3.0
+        with:
+          branch: gh-pages
+          folder: build

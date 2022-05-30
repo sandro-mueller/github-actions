@@ -1,0 +1,47 @@
+name: CI
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Cache (before npm ci)
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} # new cache needed when os or package changes
+
+          #search for older keys starting with
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Create pull request -> develop
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm test -- --coverage
+        env:
+          CI: true # removes interactive terminal for tests
+
+      # Confirm pull request
+      - name: Build
+        if: github.event_name == 'push'
+        run: npm run build
+
+      # Upload Build Folder
+      - name: Upload Build Folder
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build

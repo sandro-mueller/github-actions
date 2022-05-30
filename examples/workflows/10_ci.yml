@@ -1,0 +1,28 @@
+name: CI
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Create pull request -> develop
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm test -- --coverage
+        env:
+          CI: true # removes interactive terminal for tests
+
+      # Confirm pull request
+      - name: Build
+        if: github.event_name == 'push'
+        run: npm run build
