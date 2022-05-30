@@ -25,6 +25,15 @@ npm run format:write
 npm run deploy
 ```
 
+### Github settings
+
+Notifications: Actions
+
+### Github repo settings
+
+Pages: GitHub Pages
+Branch: Branch protection rules
+
 ### Pipeline pull (develop / main)
 
 install dependencies
@@ -44,15 +53,6 @@ upload build as an artifact
 create a release (main)
 deploy to github pages
 cache dependendies
-
-### Github settings
-
-Notifications: Actions
-
-### Github repo settings
-
-Pages: GitHub Pages
-Branch: Branch protection rules
 
 ### Overview
 
