@@ -52,3 +52,19 @@ Notifications: Actions
 ### Github repo settings
 
 Pages: GitHub Pages
+Branch: Branch protection rules
+
+### Overview
+
+1. Simple example (bash)
+2. Debug Secrets
+3. Actions Marketplace
+4. Checkout action
+5. Environemt variables
+6. Events and Cron jobs
+7. Filtering
+8. Action env + Job env + Step env
+9. Custom secrets
+10. Matrix
+11. Docker
+12. CI-Pipeline
